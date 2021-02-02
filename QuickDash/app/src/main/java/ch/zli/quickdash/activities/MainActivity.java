@@ -57,5 +57,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        total_steps.setText(preferences.getString("total_count", "0"));
+    }
+
 
 }
