@@ -52,11 +52,29 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         }
 
         reset.setOnClickListener(v -> {
+                stepService.reset();
+                sharedPreferenceModel.editCount(stepService.getDaily());
 
         });
 
         invite.setOnClickListener(v -> {
             //invite function to be implemented
+        });
+
+        newGoal.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                stepService.setGoal(Integer.parseInt(s.toString()));
+                sharedPreferenceModel.editGoal(Integer.parseInt(s.toString()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                dailyGoal.setText(String.valueOf(stepService.getGoal()));
+            }
         });
 
 
@@ -114,6 +132,5 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
 
 }
