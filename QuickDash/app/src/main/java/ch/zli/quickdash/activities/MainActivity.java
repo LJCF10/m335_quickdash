@@ -3,6 +3,8 @@ package ch.zli.quickdash.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Button;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ch.zli.quickdash.R;
+import ch.zli.quickdash.models.SharedPref;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,12 +1,28 @@
 package ch.zli.quickdash.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.TextView;
 
 import ch.zli.quickdash.R;
+import ch.zli.quickdash.models.SharedPref;
+import ch.zli.quickdash.services.StepCounterService;
 
 public class StepCounterActivity extends AppCompatActivity implements SensorEventListener {
 
