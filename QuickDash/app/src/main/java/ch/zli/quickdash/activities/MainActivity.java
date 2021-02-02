@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     Button counter;
     TextView total_steps;
 
+    SharedPreferences preferences;
+    SharedPref sharedPreferenceModel;
 
 
     @Override
@@ -31,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
         counter = findViewById(R.id.stepcounter);
         total_steps = findViewById(R.id.totalsteps);
 
-
+        sharedPreferenceModel = new SharedPref();
+        preferences = sharedPreferenceModel.getPref(MainActivity.this);
+        total_steps.setText(sharedPreferenceModel.readCount(preferences, MainActivity.this));
 
         camera_button.setOnClickListener(v -> {
             startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE);
