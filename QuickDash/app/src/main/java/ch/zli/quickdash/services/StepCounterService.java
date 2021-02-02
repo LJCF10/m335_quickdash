@@ -10,7 +10,7 @@ import android.os.IBinder;
 
 import ch.zli.quickdash.models.StepCounter;
 
-public class StepCounterService extends Service implements SensorEventListener {
+public class StepCounterService extends Service {
 
     private final StepCounter stepModel = new StepCounter();
 
@@ -50,17 +50,4 @@ public class StepCounterService extends Service implements SensorEventListener {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-
 }
