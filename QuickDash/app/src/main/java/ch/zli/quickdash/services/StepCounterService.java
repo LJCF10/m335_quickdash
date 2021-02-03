@@ -42,10 +42,6 @@ public class StepCounterService extends Service {
         return stepModel.getSteps();
     }
 
-    public void invite(){
-
-    }
-
     @Override
     public IBinder onBind(Intent intent) {
         return binder;

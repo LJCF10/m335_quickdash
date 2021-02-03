@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences preferences;
     SharedPref sharedPreferenceModel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +64,4 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         total_steps.setText(preferences.getString("total_count", "0"));
     }
-
-
 }

@@ -15,16 +15,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.google.android.gms.appinvite.AppInviteInvitation;
-
 import ch.zli.quickdash.R;
 import ch.zli.quickdash.models.SharedPref;
 import ch.zli.quickdash.services.StepCounterService;
@@ -45,6 +42,8 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
 
     SharedPreferences sharedPref;
     SharedPref sharedPreferenceModel;
+
+    private final static int REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +68,16 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
             //asks for permission in device
-            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, REQUEST_CODE);
         }
 
         reset.setOnClickListener(v -> {
                 stepService.reset();
                 sharedPreferenceModel.editCount(stepService.getDaily());
-
         });
 
         invite.setOnClickListener(v -> {
-            sendShareEvent();
+            sendShareInvite();
         });
 
         newGoal.addTextChangedListener(new TextWatcher() {
@@ -99,34 +97,34 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         });
     }
 
-    public void sendShareEvent() {
+    public void sendShareInvite() {
         try {
-            Intent intent = new AppInviteInvitation.IntentBuilder("Download App")
+            Intent intent = new AppInviteInvitation.IntentBuilder("Invite to QuickDash")
                     .setMessage("can you beat my score of " + stepService.getDaily())
-                    //.setDeepLink(Uri.parse(bookDeepLinkUrl))
-                    //.setCustomImage(Uri.parse(bookImageUrl))
                     .setCallToActionText("Download")
                     .build();
-            startActivityForResult(intent, 1);
-        } catch (ActivityNotFoundException ac) {
+            startActivityForResult(intent, REQUEST_CODE);
+        }
+        catch (ActivityNotFoundException ac)
+        {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            //sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sharing_book_title, bookTitle));
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }
     }
 
-    //I don't understand
+    //I don't understand why Authorisation fails even though I've created multiple Keys
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("eeeeee" + requestCode);
-        System.out.println("eeeeee2" + resultCode);
+        //Prints for debugging
+        System.out.println("req Code " + requestCode);
+        System.out.println("res Code " + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
-                System.out.println("aaaaa" + ids);
+                System.out.println("Successfull Invite" + ids);
             } else {
 
                 System.out.println("invite send failed or cancelled:" + requestCode + ",resultCode:" + resultCode );
@@ -162,7 +160,6 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
     }
 
     private ServiceConnection connection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName name, IBinder iBinder) {
             StepCounterService.CounterBinder binder = (StepCounterService.CounterBinder) iBinder;
@@ -187,5 +184,4 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
 }

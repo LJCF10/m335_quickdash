@@ -35,6 +35,4 @@ public class SharedPref {
     public String readGoal(SharedPreferences pref, Context context){
         return pref.getString("goal", "1000");
     }
-
-
 }
