@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.zli.quickdash">
 
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+
     <uses-feature android:name="android.hardware.Sensor.stepcounter" android:required="true"/>
     <uses-feature android:name="android.hardware.Sensor.stepdetector" android:required="true"/>
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>

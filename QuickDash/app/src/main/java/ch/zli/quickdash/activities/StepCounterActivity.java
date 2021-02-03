@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,12 +15,15 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import ch.zli.quickdash.R;
 import ch.zli.quickdash.models.SharedPref;
@@ -74,7 +79,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         });
 
         invite.setOnClickListener(v -> {
-            //invite function to be implemented
+            sendShareEvent();
         });
 
         newGoal.addTextChangedListener(new TextWatcher() {
@@ -92,13 +97,47 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
                 dailyGoal.setText(String.valueOf(stepService.getGoal()));
             }
         });
+    }
 
+    public void sendShareEvent() {
+        try {
+            Intent intent = new AppInviteInvitation.IntentBuilder("Download App")
+                    .setMessage("can you beat my score of " + stepService.getDaily())
+                    //.setDeepLink(Uri.parse(bookDeepLinkUrl))
+                    //.setCustomImage(Uri.parse(bookImageUrl))
+                    .setCallToActionText("Download")
+                    .build();
+            startActivityForResult(intent, 1);
+        } catch (ActivityNotFoundException ac) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            //sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sharing_book_title, bookTitle));
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        }
+    }
 
+    //I don't understand
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("eeeeee" + requestCode);
+        System.out.println("eeeeee2" + resultCode);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                System.out.println("aaaaa" + ids);
+            } else {
+
+                System.out.println("invite send failed or cancelled:" + requestCode + ",resultCode:" + resultCode );
+            }
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        stepService = new StepCounterService();
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
